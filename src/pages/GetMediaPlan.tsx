@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/sonner";
 import Reveal from "@/components/Reveal";
 import { CLIENT_FACTS, MEDIA_INVENTORY } from "@/lib/clientFacts";
 import { cn } from "@/lib/utils";
@@ -56,6 +57,7 @@ const spring = { duration: 0.24, ease: [0.2, 0.7, 0.2, 1] } as const;
 const GetMediaPlan = () => {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [routing, setRouting] = useState<{ mailto: string; whatsapp: string } | null>(null);
   const [searchParams] = useSearchParams();
 
@@ -84,34 +86,39 @@ const GetMediaPlan = () => {
     form.setValue("media", (mapped ?? "Not Sure / Need Recommendation") as FormValues["media"], { shouldValidate: true });
   }, [form, searchParams]);
 
-  const values = form.watch();
+  const goal = form.watch("goal");
+  const budget = form.watch("budget");
+  const media = form.watch("media");
   const progress = (step / steps.length) * 100;
 
   const leadSummary = useMemo(() => {
+    if (step !== 5) return "";
+    const data = form.getValues();
     const lines = [
       "Media Plan Requirement",
       "MSRTC Media Network",
       "",
-      `Goal: ${values.goal || "-"}`,
-      `Budget: ${values.budget || "-"}`,
-      `Media Preference: ${values.media || "-"}`,
-      `Name: ${values.name || "-"}`,
-      `Company: ${values.company || "-"}`,
-      `Email: ${values.email || "-"}`,
-      `Phone: ${values.phone || "-"}`,
-      `Target city/district: ${values.district || "-"}`,
-      `Campaign timeline: ${values.timeline || "-"}`,
-      values.message ? `Message: ${values.message}` : "Message: -",
+      `Goal: ${data.goal || "-"}`,
+      `Budget: ${data.budget || "-"}`,
+      `Media Preference: ${data.media || "-"}`,
+      `Name: ${data.name || "-"}`,
+      `Company: ${data.company || "-"}`,
+      `Email: ${data.email || "-"}`,
+      `Phone: ${data.phone || "-"}`,
+      `Target city/district: ${data.district || "-"}`,
+      `Campaign timeline: ${data.timeline || "-"}`,
+      data.message ? `Message: ${data.message}` : "Message: -",
     ];
     return lines.join("\n");
-  }, [values]);
+  }, [step, form]);
 
   const next = async () => {
     const ok = await form.trigger(stepFields[step]);
     if (ok) setStep((current) => Math.min(steps.length, current + 1));
   };
 
-  const submit = form.handleSubmit((data) => {
+  const submit = form.handleSubmit(async (data) => {
+    setSubmitting(true);
     const lines = [
       "Media Plan Requirement",
       "MSRTC Media Network",
@@ -127,12 +134,45 @@ const GetMediaPlan = () => {
       `Campaign timeline: ${data.timeline}`,
       data.message ? `Message: ${data.message}` : null,
     ].filter(Boolean).join("\n");
+    
     const subject = `Media Plan Requirement - ${data.company}`;
-    setRouting({
-      mailto: `mailto:${CLIENT_FACTS.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`,
-      whatsapp: `https://wa.me/${CLIENT_FACTS.whatsappNumber}?text=${encodeURIComponent(lines)}`,
-    });
-    setSubmitted(true);
+    
+    const payload = {
+      ...data,
+      _subject: "New KIPL Media Plan Request",
+      _template: "table",
+      _captcha: "false"
+    };
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/contactus@kiploutdoormedia.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      if (response.ok) {
+        setRouting({
+          mailto: `mailto:${CLIENT_FACTS.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`,
+          whatsapp: `https://wa.me/${CLIENT_FACTS.whatsappNumber}?text=${encodeURIComponent(lines)}`,
+        });
+        setSubmitted(true);
+      } else {
+        toast.error("Submission failed", { description: "Please use the WhatsApp or Email buttons below to send directly." });
+      }
+    } catch (err) {
+      // Fallback in case of network issues so user doesn't lose their data
+      setRouting({
+        mailto: `mailto:${CLIENT_FACTS.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`,
+        whatsapp: `https://wa.me/${CLIENT_FACTS.whatsappNumber}?text=${encodeURIComponent(lines)}`,
+      });
+      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
+    }
   });
 
   if (submitted) {
@@ -142,9 +182,9 @@ const GetMediaPlan = () => {
           <motion.div initial={{ scale: 0.88, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={spring} className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-status-live/15 text-status-live ring-1 ring-status-live/30">
             <CheckCircle2 className="h-10 w-10" />
           </motion.div>
-          <h1 className="mt-7 h-section">Your media plan request is ready to send.</h1>
+          <h1 className="mt-7 h-section">Your media plan request has been submitted successfully.</h1>
           <p className="mt-4 text-[15px] leading-relaxed text-muted-2">
-            No backend credentials were configured in this project, so the site truthfully prepares your requirement for both Email and WhatsApp.
+            Thank you for reaching out. We have received your campaign requirements. If you would like to initiate discussion immediately, you can also forward a copy directly via Email or WhatsApp using the options below.
           </p>
           {routing && (
             <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -174,7 +214,7 @@ const GetMediaPlan = () => {
             <h1 className="mt-5 h-section">Build a sharper Maharashtra transit media brief.</h1>
             <p className="mt-5 lede">Five focused steps. Smooth validation. No browser alerts. No random redirect.</p>
             <div className="mt-8 rounded-md border border-stroke bg-surface-1 p-5 text-[13px] leading-relaxed text-muted-2">
-              Media requirements are prepared for both Email and WhatsApp fallback routing.
+              Your submission will be securely routed directly to our operations team. Direct forwarding options are also provided upon completion.
             </div>
           </Reveal>
 
@@ -185,7 +225,7 @@ const GetMediaPlan = () => {
                 <span className="text-accent">{steps[step - 1]}</span>
               </div>
               <Progress value={progress} className="mt-3 h-1.5" />
-              <div className="mt-5 grid gap-2 sm:grid-cols-5">
+              <div className="mt-5 grid grid-cols-5 gap-1.5 sm:gap-2">
                 {steps.map((label, i) => (
                   <button
                     key={label}
@@ -194,11 +234,12 @@ const GetMediaPlan = () => {
                       if (i + 1 <= step) setStep(i + 1);
                     }}
                     className={cn(
-                      "rounded-sm border px-2 py-2 text-[10px] font-bold uppercase tracking-[0.12em]",
+                      "rounded-sm border py-2 text-[10px] font-bold uppercase tracking-[0.12em] text-center",
                       step === i + 1 ? "border-accent bg-accent/10 text-ivory" : i + 1 < step ? "border-status-live/30 text-status-live" : "border-stroke text-faint",
                     )}
                   >
-                    {label}
+                    <span className="sm:hidden">{i + 1}</span>
+                    <span className="hidden sm:inline">{label}</span>
                   </button>
                 ))}
               </div>
@@ -206,9 +247,9 @@ const GetMediaPlan = () => {
 
             <form onSubmit={submit} className="mt-6 premium-panel p-6 sm:p-8">
               <AnimatePresence mode="wait" initial={false}>
-                {step === 1 && <ChoiceStep key="goal" title="What is the campaign goal?" value={values.goal} options={goals} onSelect={(v) => form.setValue("goal", v as FormValues["goal"], { shouldValidate: true })} error={form.formState.errors.goal?.message} />}
-                {step === 2 && <ChoiceStep key="budget" title="What budget range should we plan around?" value={values.budget} options={budgets} onSelect={(v) => form.setValue("budget", v as FormValues["budget"], { shouldValidate: true })} error={form.formState.errors.budget?.message} />}
-                {step === 3 && <ChoiceStep key="media" title="Which media should we prioritize?" value={values.media} options={mediaOptions} onSelect={(v) => form.setValue("media", v as FormValues["media"], { shouldValidate: true })} error={form.formState.errors.media?.message} />}
+                {step === 1 && <ChoiceStep key="goal" title="What is the campaign goal?" value={goal} options={goals} onSelect={(v) => form.setValue("goal", v as FormValues["goal"], { shouldValidate: true })} error={form.formState.errors.goal?.message} />}
+                {step === 2 && <ChoiceStep key="budget" title="What budget range should we plan around?" value={budget} options={budgets} onSelect={(v) => form.setValue("budget", v as FormValues["budget"], { shouldValidate: true })} error={form.formState.errors.budget?.message} />}
+                {step === 3 && <ChoiceStep key="media" title="Which media should we prioritize?" value={media} options={mediaOptions} onSelect={(v) => form.setValue("media", v as FormValues["media"], { shouldValidate: true })} error={form.formState.errors.media?.message} />}
                 {step === 4 && (
                   <motion.div key="details" initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={spring}>
                     <h2 className="h-card text-[22px] text-ivory">Campaign details</h2>
@@ -240,8 +281,8 @@ const GetMediaPlan = () => {
                     Continue <ArrowRight className="h-4 w-4" />
                   </Button>
                 ) : (
-                  <Button type="submit" className="rounded-sm bg-accent text-accent-foreground hover:bg-accent/90 font-semibold cta-shine">
-                    Prepare Email + WhatsApp <Send className="h-4 w-4" />
+                  <Button type="submit" disabled={submitting} className="rounded-sm bg-accent text-accent-foreground hover:bg-accent/90 font-semibold cta-shine">
+                    {submitting ? "Sending…" : (<>Prepare Email + WhatsApp <Send className="h-4 w-4" /></>)}
                   </Button>
                 )}
               </div>

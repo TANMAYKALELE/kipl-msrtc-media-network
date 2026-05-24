@@ -5,11 +5,12 @@ import { KIPL_OFFICES, KIPL_EMAILS, KIPL_PHONE } from "@/lib/kipl";
 import kiplLogo from "@/assets/kipl-logo.png";
 import { WHATSAPP_URL } from "./WhatsAppQR";
 import { CLIENT_FACTS } from "@/lib/clientFacts";
+import Reveal from "./Reveal";
 
 const SiteFooter = () => {
   return (
-    <footer className="mt-32 border-t border-stroke">
-      <div className="container-page py-20">
+    <footer className="mt-20 lg:mt-24 border-t border-stroke">
+      <Reveal className="container-page py-20">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
             <img src={kiplLogo} alt="KIPL" className="h-9 w-auto" />
@@ -50,8 +51,17 @@ const SiteFooter = () => {
               <li className="flex items-center gap-2.5"><Phone className="h-3.5 w-3.5 text-accent" /><a href={`tel:+91${KIPL_PHONE}`} className="hover:text-accent">{CLIENT_FACTS.contactPhoneDisplay}</a></li>
               <li className="flex items-center gap-2.5"><MessageCircle className="h-3.5 w-3.5 text-accent" /><a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="hover:text-accent">WhatsApp KIPL</a></li>
             </ul>
-            <div className="mt-6 space-y-3 text-[12px] leading-relaxed text-muted-2">
-              <div><span className="font-semibold text-ivory">{KIPL_OFFICES[0].label}</span><br/>{KIPL_OFFICES[0].lines.join(", ")}</div>
+            <div className="mt-6 space-y-4 text-[12px] leading-relaxed text-muted-2 border-t border-stroke/50 pt-4">
+              <div>
+                <span className="font-semibold text-ivory">{KIPL_OFFICES[0].label} (HQ)</span>
+                <br/>
+                {KIPL_OFFICES[0].lines.join(", ")}
+              </div>
+              <div className="border-t border-stroke/30 pt-3">
+                <span className="font-semibold text-ivory">{KIPL_OFFICES[1].label}</span>
+                <br/>
+                {KIPL_OFFICES[1].lines.join(", ")}
+              </div>
             </div>
           </div>
         </div>
@@ -69,7 +79,7 @@ const SiteFooter = () => {
             <Link to="/disclaimer" className="hover:text-accent">Disclaimer</Link>
           </div>
         </div>
-      </div>
+      </Reveal>
     </footer>
   );
 };

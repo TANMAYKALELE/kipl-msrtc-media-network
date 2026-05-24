@@ -6,7 +6,6 @@ interface Props {
   title: string;
   subtitle?: string;
   align?: "left" | "center";
-  onDark?: boolean;
   className?: string;
 }
 

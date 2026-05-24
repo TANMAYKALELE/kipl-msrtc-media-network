@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { NAV_LINKS, COMPANY_NAV } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -14,32 +14,48 @@ const SiteHeader = () => {
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
+  const rafId = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      rafId.current = requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 12);
+        ticking = false;
+      });
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId.current);
+    };
   }, []);
+
   useEffect(() => setOpen(false), [pathname]);
+
+  const headerStyle = useMemo(() => ({
+    maxWidth: "1480px",
+    height: scrolled ? "56px" : "62px",
+    background: scrolled ? "hsl(var(--surface-1) / 0.92)" : "hsl(var(--surface-1) / 0.62)",
+    borderColor: scrolled ? "hsl(var(--stroke-strong) / 0.9)" : "hsl(var(--stroke) / 0.6)",
+    backdropFilter: "blur(12px) saturate(130%)",
+    WebkitBackdropFilter: "blur(12px) saturate(130%)",
+    transition: "height 0.28s cubic-bezier(0.22,1,0.36,1), background 0.28s ease, border-color 0.28s ease",
+  }), [scrolled]);
+
+  const headerShadow = useMemo(() => ({
+    boxShadow: scrolled ? "0 16px 48px rgba(0,0,0,0.28)" : "0 8px 32px rgba(0,0,0,0.14)",
+  }), [scrolled]);
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-4 z-50 px-4 sm:px-6">
-      <motion.div
+      <div
         className="pointer-events-auto mx-auto flex items-center justify-between gap-5 rounded-md border px-4 sm:px-5"
-        animate={{
-          y: scrolled ? 0 : 0,
-          boxShadow: scrolled ? "0 18px 60px rgba(0,0,0,0.32)" : "0 10px 40px rgba(0,0,0,0.16)",
-        }}
-        transition={{ duration: 0.28, ease: easePremium }}
-        style={{
-          maxWidth: "1480px",
-          height: scrolled ? "58px" : "62px",
-          background: scrolled ? "hsl(var(--surface-1) / 0.9)" : "hsl(var(--surface-1) / 0.62)",
-          borderColor: scrolled ? "hsl(var(--stroke-strong) / 0.9)" : "hsl(var(--stroke) / 0.6)",
-          backdropFilter: "blur(18px) saturate(140%)",
-          WebkitBackdropFilter: "blur(18px) saturate(140%)",
-        }}>
+        style={{ ...headerStyle, ...headerShadow }}
+      >
         <Link to="/" className="flex items-center gap-3 min-w-0">
           <img src={kiplLogo} alt="KIPL" className="h-7 w-auto shrink-0" />
           <span className="hidden sm:block h-7 w-px bg-stroke-strong/70" />
@@ -55,7 +71,7 @@ const SiteHeader = () => {
           {[...NAV_LINKS, ...COMPANY_NAV].map((l) => (
             <NavLink key={l.to} to={l.to}
               className={({ isActive }) => cn(
-                "group relative flex items-center gap-1.5 py-1 text-[11.5px] font-semibold uppercase tracking-[0.16em] transition-colors",
+                "group relative flex items-center gap-1.5 py-1 text-[11.5px] font-semibold uppercase tracking-[0.16em] transition-colors duration-200",
                 isActive ? "text-ivory" : "text-foreground/80 hover:text-ivory",
               )}>
               {({ isActive }) => (
@@ -86,26 +102,34 @@ const SiteHeader = () => {
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
-      </motion.div>
+      </div>
 
-      {open && (
-        <div className="pointer-events-auto mx-auto mt-2 rounded-md border border-stroke-strong/70 bg-surface-1/95 backdrop-blur-xl animate-fade-in" style={{ maxWidth: "1480px" }}>
-          <nav className="flex flex-col gap-1 p-4" aria-label="Mobile">
-            {[...NAV_LINKS, ...COMPANY_NAV].map((l) => (
-              <NavLink key={l.to} to={l.to}
-                className={({ isActive }) => cn(
-                  "rounded-sm px-3 py-3 text-[12px] font-semibold uppercase tracking-[0.16em]",
-                  isActive ? "text-ivory bg-surface-2" : "text-muted-2 hover:bg-surface-2 hover:text-ivory",
-                )}>
-                {l.label}
-              </NavLink>
-            ))}
-            <Button asChild className="mt-2 bg-accent text-accent-foreground hover:bg-accent/90 font-semibold cta-shine">
-              <Link to="/get-media-plan">Get My Media Plan</Link>
-            </Button>
-          </nav>
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: easePremium } }}
+            exit={{ opacity: 0, y: -8, transition: { duration: 0.15, ease: easePremium } }}
+            className="pointer-events-auto mx-auto mt-2 rounded-md border border-stroke-strong/70 bg-surface-1/95 backdrop-blur-lg"
+            style={{ maxWidth: "1480px" }}
+          >
+            <nav className="flex flex-col gap-1 p-4" aria-label="Mobile">
+              {[...NAV_LINKS, ...COMPANY_NAV].map((l) => (
+                <NavLink key={l.to} to={l.to}
+                  className={({ isActive }) => cn(
+                    "rounded-sm px-3 py-3 text-[12px] font-semibold uppercase tracking-[0.16em]",
+                    isActive ? "text-ivory bg-surface-2" : "text-muted-2 hover:bg-surface-2 hover:text-ivory",
+                  )}>
+                  {l.label}
+                </NavLink>
+              ))}
+              <Button asChild className="mt-2 bg-accent text-accent-foreground hover:bg-accent/90 font-semibold cta-shine">
+                <Link to="/get-media-plan">Get My Media Plan</Link>
+              </Button>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

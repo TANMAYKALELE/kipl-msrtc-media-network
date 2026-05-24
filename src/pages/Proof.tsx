@@ -15,6 +15,7 @@ import proofDigital from "@/assets/proof-digital.jpg";
 import proofInterior from "@/assets/proof-interior.jpg";
 import proofBus from "@/assets/proof-bus.jpg";
 import { cardHover } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 const PROOF_SYSTEM = [
   { icon: Camera, t: "GPS-enabled start photos", d: "Location-stamped opening documentation for physical placements." },
@@ -31,6 +32,7 @@ const Proof = () => {
   const reduce = useReducedMotion();
   return (
   <>
+    {/* ─── Hero ─── */}
     <section className="pt-36 pb-12 lg:pt-40 lg:pb-16">
       <div className="container-page grid gap-10 lg:grid-cols-12 lg:items-end">
         <Reveal className="lg:col-span-8">
@@ -45,23 +47,24 @@ const Proof = () => {
       </div>
     </section>
 
+    {/* ─── Photo Evidence ─── */}
     <section className="section-y border-t border-stroke">
       <div className="container-page">
         <div className="grid gap-6 lg:grid-cols-12">
           {[
-            { src: proofDigital, tag: "Digital proof", caption: "Screen logs and display count access where applicable.", span: "lg:col-span-7" },
-            { src: proofInterior, tag: "Installation proof", caption: "In-bus and display installations documented during deployment.", span: "lg:col-span-5" },
-            { src: proofBus, tag: "Depot-wise visibility", caption: "Route, depot, and campaign execution proof for distributed media.", span: "lg:col-span-12" },
+            { src: proofDigital, tag: "Digital proof", caption: "Screen logs and display count access where applicable.", span: "lg:col-span-7", aspect: "aspect-[16/10]" },
+            { src: proofInterior, tag: "Installation proof", caption: "In-bus and display installations documented during deployment.", span: "lg:col-span-5", aspect: "aspect-[16/10]" },
+            { src: proofBus, tag: "Depot-wise visibility", caption: "Route, depot, and campaign execution proof for distributed media.", span: "lg:col-span-12", aspect: "aspect-[16/10] md:aspect-[21/9]" },
           ].map((item, i) => (
-            <Reveal key={item.tag} delay={i * 80} className={`${item.span} h-80 lg:h-[30rem]`}>
+            <Reveal key={item.tag} delay={i * 80} className={item.span}>
               <motion.figure whileHover={reduce ? undefined : cardHover} className="group flex h-full flex-col">
-                <div className="relative flex-1 overflow-hidden rounded-sm border border-stroke bg-surface-1">
+                <div className={cn("relative overflow-hidden rounded-sm border border-stroke bg-surface-1", item.aspect)}>
                   <img src={item.src} alt={item.tag} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,hsl(var(--background)/0.72))]" />
                 </div>
                 <figcaption className="pt-4">
                   <div className="label-amber">{item.tag}</div>
-                  <div className="mt-2 text-[14px] leading-snug text-ivory">{item.caption}</div>
+                  <div className="mt-2 text-body-sm leading-snug text-ivory">{item.caption}</div>
                 </figcaption>
               </motion.figure>
             </Reveal>
@@ -70,6 +73,7 @@ const Proof = () => {
       </div>
     </section>
 
+    {/* ─── Evidence Stack ─── */}
     <section className="section-y border-t border-stroke bg-surface-1/30">
       <div className="container-page grid gap-12 lg:grid-cols-12">
         <Reveal className="lg:col-span-4">
@@ -82,21 +86,24 @@ const Proof = () => {
             <Reveal key={t} delay={i * 45} className="bg-background p-6">
               <Icon className="h-4 w-4 text-accent" strokeWidth={1.5} />
               <h3 className="mt-5 h-card text-[16px] text-ivory">{t}</h3>
-              <p className="mt-2 text-[13.5px] leading-relaxed text-muted-2">{d}</p>
+              <p className="mt-2 text-caption leading-relaxed text-muted-2">{d}</p>
             </Reveal>
           ))}
         </div>
       </div>
     </section>
 
+    {/* ─── Reporting Callout ─── */}
     <section className="section-y-sm border-t border-stroke">
-      <div className="container-page rounded-md border border-stroke bg-surface-1 p-8">
-        <Gauge className="h-5 w-5 text-accent" />
-        <h2 className="mt-5 h-section text-[2rem] lg:text-[2.4rem]">Reporting is part of the product.</h2>
-        <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-muted-2">
-          The goal is simple: every campaign should leave the advertiser with a clear record of deployment, applicable logs, and execution evidence tied to the selected media format.
-        </p>
-      </div>
+      <Reveal className="container-page">
+        <div className="rounded-md border border-stroke bg-surface-1 p-8">
+          <Gauge className="h-5 w-5 text-accent" />
+          <h2 className="mt-5 h-section">Reporting is part of the product.</h2>
+          <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-muted-2">
+            The goal is simple: every campaign should leave the advertiser with a clear record of deployment, applicable logs, and execution evidence tied to the selected media format.
+          </p>
+        </div>
+      </Reveal>
     </section>
 
     <CTABanner primaryLabel="Get My Media Plan" secondary={{ to: "/solutions", label: "View Inventory" }} />
