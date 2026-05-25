@@ -122,6 +122,6 @@ export const KIPL_UVP = [
   },
   {
     title: "Sustainability & Innovation",
-    desc: "Eco-friendly PVC-free materials with UV resistance, real-time analytics, location-based tracking, and future-ready cloud infrastructure.",
+    desc: "State-of-the-art materials with UV resistance, real-time analytics, location-based tracking, and future-ready cloud infrastructure.",
   },
 ] as const;

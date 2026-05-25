@@ -9,7 +9,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Reveal from "@/components/Reveal";
 import Counter from "@/components/Counter";
-import { KIPL, KIPL_PROJECTS, KIPL_WHY_PARTNER } from "@/lib/kipl";
+import { KIPL, KIPL_WHY_PARTNER } from "@/lib/kipl";
 import { CLIENT_FACTS } from "@/lib/clientFacts";
 import { staggerContainer, fadeUp, cardHover, cardHoverReset, viewportReveal, safeVariants } from "@/lib/motion";
 import proofDigital from "@/assets/proof-digital.jpg";
@@ -30,7 +30,7 @@ const EXPERIENCE = [
   { t: `${CLIENT_FACTS.kiplExperience} specialized`, d: "In digital advertising infrastructure development and management." },
   { t: "Large-scale digital media", d: "Network-wide deployment, monitoring, and content systems." },
   { t: "Transportation hub expertise", d: "Stations, depots, fleets, and passenger touchpoints." },
-  { t: "Government & public-sector", d: "Compliant delivery for state and PSU clients." },
+  { t: "Government & public-sector", d: "Proven delivery for state and PSU clients." },
 ];
 
 const TECH = [
@@ -49,7 +49,6 @@ const BENEFITS = [
   { icon: Gauge, t: "99.99% uptime over 5 years", d: "Proven reliability on critical government infrastructure." },
   { icon: Shield, t: "98% system uptime guarantee", d: "Operational SLA backed by centralized monitoring." },
   { icon: Users, t: CLIENT_FACTS.kiplEmployees, d: "Dedicated employees across delivery, engineering, and field operations." },
-  { icon: Leaf, t: "Eco-friendly PVC-free materials", d: "UV-resistant, sustainable substrates for outdoor media." },
   { icon: BarChart3, t: "Real-time analytics", d: "Location-based tracking and live campaign telemetry." },
   { icon: Cloud, t: "Future-ready cloud infra", d: "Scalable architecture built for the next decade." },
   { icon: Network, t: "Pure ad revenue to MSRTC", d: "No infrastructure burden, no operational overhead." },
@@ -176,31 +175,7 @@ const AboutKipl = () => {
         </motion.div>
       </SectionRail>
 
-      {/* Major Project Achievements */}
-      <SectionRail label="Major Project Achievements" title="Government-grade delivery, already on the ground." lede="Live projects executed for state and law-enforcement bodies — proof of capability at the scale Maharashtra requires.">
-        <motion.div
-          className="grid gap-6 sm:grid-cols-2"
-          variants={safeVariants(reduce, staggerContainer)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportReveal}
-        >
-          {KIPL_PROJECTS.map((p) => (
-            <motion.div
-              key={p.name}
-              className="card-surface relative p-7"
-              variants={safeVariants(reduce, fadeUp)}
-              whileHover={reduce ? undefined : cardHover}
-              whileTap={reduce ? undefined : cardHoverReset}
-            >
-              <div className="absolute inset-x-0 top-0 h-px bg-accent/70" />
-              <div className="label-amber">Government Project</div>
-              <h3 className="mt-4 h-card text-ivory text-[18px]">{p.name}</h3>
-              <p className="mt-3 text-body-sm leading-relaxed text-muted-2">{p.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </SectionRail>
+
 
       {/* Why KIPL */}
       <SectionRail label="Why KIPL" title="Why KIPL supports credibility, execution, and technical confidence.">

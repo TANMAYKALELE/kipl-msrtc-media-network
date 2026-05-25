@@ -57,9 +57,9 @@ const SiteHeader = () => {
         style={{ ...headerStyle, ...headerShadow }}
       >
         <Link to="/" className="flex items-center gap-3 min-w-0">
-          <img src={kiplLogo} alt="KIPL" className="h-7 w-auto shrink-0" />
-          <span className="hidden sm:block h-7 w-px bg-stroke-strong/70" />
-          <img src={msrtcLogo} alt="MSRTC" className="hidden sm:block h-9 w-auto shrink-0 object-contain" />
+          <img src={kiplLogo} alt="KIPL" className="h-6 sm:h-7 w-auto shrink-0" />
+          <span className="h-6 sm:h-7 w-px bg-stroke-strong/70" />
+          <img src={msrtcLogo} alt="MSRTC" className="h-8 sm:h-9 w-auto shrink-0 object-contain" />
           <span className="hidden sm:block h-7 w-px bg-stroke-strong/70" />
           <span className="hidden sm:flex flex-col leading-none">
             <span className="font-display text-[13.5px] font-bold tracking-tight text-ivory">MSRTC Media Network</span>
