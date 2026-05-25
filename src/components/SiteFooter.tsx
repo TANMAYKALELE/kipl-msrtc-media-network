@@ -66,10 +66,7 @@ const SiteFooter = () => {
           </div>
         </div>
 
-        <div className="mt-14 space-y-2 border-t border-stroke pt-6 text-[11.5px] leading-relaxed text-faint">
-          <p><span className="font-semibold text-muted-2">Important · </span>{PWD_NOTE}</p>
-          <p><span className="font-semibold text-muted-2">Depot conditions · </span>{BOT_NOTE}</p>
-        </div>
+
 
         <div className="mt-6 flex flex-col gap-3 text-[11.5px] text-faint sm:flex-row sm:items-center sm:justify-between">
           <div>© {new Date().getFullYear()} {KIPL_LEGAL_NAME}. All rights reserved.</div>

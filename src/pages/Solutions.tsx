@@ -19,7 +19,7 @@ type Tab = (typeof TABS)[number];
 
 const stats = [
   { value: "1,70,388", label: "GRAB HANDLES", sub: CLIENT_FACTS.grabHandlesLogic },
-  { value: "2,100", label: "HOARDINGS", sub: "as per RFP" },
+  { value: "2,100", label: "HOARDINGS", sub: "Total Network" },
   { value: "~500", label: "DIGITAL HOARDINGS", sub: "10 × 15" },
   { value: "1,686", label: "SCREENS", sub: "in-bus LCD / LED" },
 ] as const;
@@ -114,7 +114,7 @@ const Solutions = () => {
                 Inventory at a Glance
               </div>
               <h2 className="mt-4 h-section text-ivory font-display font-bold max-w-2xl leading-[1.15]">
-                Network quantities,<br />sourced from the RFP.
+                Network quantities,<br />officially approved.
               </h2>
             </Reveal>
           </div>
@@ -215,7 +215,6 @@ const Solutions = () => {
             <div className="mt-12 rounded-md border border-stroke bg-surface-1 p-6 text-[13px] leading-relaxed text-muted-2">
               <p><span className="font-semibold text-ivory">Transparency · </span>Inventory may be live, launching, subject to clearance / fleet rollout, or coming in phases. Availability is confirmed campaign-wise.</p>
               <p className="mt-3"><span className="font-semibold text-ivory">Station Boards · </span>Station Boards are non-lit.</p>
-              <p className="mt-3"><span className="font-semibold text-ivory">PWD / BOT · </span>{PWD_NOTE} {BOT_NOTE}</p>
             </div>
           </Reveal>
         </div>

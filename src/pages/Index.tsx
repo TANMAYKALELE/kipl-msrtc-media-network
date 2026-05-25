@@ -28,6 +28,7 @@ import { CLIENT_FACTS, MEDIA_INVENTORY, TRUST_STATS } from "@/lib/clientFacts";
 import { KIPL } from "@/lib/kipl";
 import { buttonHover, cardHover, easePremium, fadeUp, staggerContainer } from "@/lib/motion";
 import { statusKey } from "@/lib/statusKey";
+import { cn } from "@/lib/utils";
 
 const HERO_VIDEO_SRC: string | null = null;
 
@@ -227,14 +228,29 @@ const Index = () => {
             <p className="mt-6 lede">Rural and urban Maharashtra, with strong Tier 2 and Tier 3 market advantage.</p>
           </Reveal>
           <div className="lg:col-span-8 grid grid-cols-2 gap-px bg-stroke p-px sm:grid-cols-3 lg:grid-cols-5">
-            {FUNNEL_STATS.map(({ value, label, icon: Icon }, i) => (
-              <Reveal key={label} delay={i * 60} className="bg-background p-6">
-                <Icon className="h-4 w-4 text-accent" strokeWidth={1.5} />
-                <div className="mt-5">
-                  <Counter value={value} label={label} />
-                </div>
-              </Reveal>
-            ))}
+            {FUNNEL_STATS.map(({ value, label, icon: Icon }, i) => {
+              const isReach = label === "Daily Reach";
+              return (
+                <Reveal
+                  key={label}
+                  delay={i * 60}
+                  className={cn(
+                    "p-6 relative transition-all duration-300",
+                    isReach
+                      ? "bg-gradient-to-b from-surface-1 to-accent/15 ring-1 ring-accent/40 z-10 shadow-[0_0_20px_rgba(245,158,11,0.12)]"
+                      : "bg-background"
+                  )}
+                >
+                  {isReach && (
+                    <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-accent animate-pulse" />
+                  )}
+                  <Icon className={cn("h-4 w-4", isReach ? "text-accent scale-110" : "text-accent")} strokeWidth={1.5} />
+                  <div className="mt-5">
+                    <Counter value={value} label={label} />
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>

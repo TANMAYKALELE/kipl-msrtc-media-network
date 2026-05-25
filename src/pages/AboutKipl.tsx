@@ -98,12 +98,12 @@ const AboutKipl = () => {
           <Reveal>
             <div className="flex items-center gap-3">
               <span className="h-px w-10 bg-violet/60" />
-              <span className="label-sm" style={{ color: "hsl(var(--brand-violet))" }}>About KIPL · Implementing Partner</span>
+              <span className="label-sm" style={{ color: "hsl(var(--brand-violet))" }}>About KIPL · Implementing Agency</span>
             </div>
           </Reveal>
           <Reveal delay={80}>
             <h1 className="mt-7 h-display text-ivory max-w-5xl">
-              {KIPL.legalName} — <span className="text-accent">implementation partner behind the MSRTC Media Network.</span>
+              {KIPL.legalName} — <span className="text-accent">implementation agency behind the MSRTC Media Network.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
@@ -131,7 +131,7 @@ const AboutKipl = () => {
       </section>
 
       {/* Company Overview */}
-      <SectionRail label="Company Overview" title="The implementation, infrastructure, monitoring, and execution partner." lede={`Company overview: ${CLIENT_FACTS.companyDistricts}, with delivery, engineering, and operations teams under one roof.`}>
+      <SectionRail label="Company Overview" title="The implementation, infrastructure, monitoring, and execution agency." lede={`Company overview: ${CLIENT_FACTS.companyDistricts}, with delivery, engineering, and operations teams under one roof.`}>
         <motion.ul
           className="border-y border-stroke divide-y divide-stroke"
           variants={safeVariants(reduce, staggerContainer)}

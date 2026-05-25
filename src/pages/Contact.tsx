@@ -69,7 +69,7 @@ const Contact = () => {
             </Reveal>
           </div>
           <Reveal delay={120} className="lg:col-span-4">
-            <p className="lede max-w-md">{KIPL_LEGAL_NAME} — implementation partner for the MSRTC Media Network.</p>
+            <p className="lede max-w-md">{KIPL_LEGAL_NAME} — implementation agency for the MSRTC Media Network.</p>
           </Reveal>
         </div>
       </section>

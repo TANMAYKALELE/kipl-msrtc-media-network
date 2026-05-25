@@ -3,7 +3,7 @@ import { CLIENT_FACTS } from "./clientFacts";
 export const KIPL = {
   legalName: CLIENT_FACTS.implementer,
   shortName: "KIPL",
-  tagline: "Implementation, infrastructure, monitoring, and execution partner behind the MSRTC Media Network.",
+  tagline: "Implementation, infrastructure, monitoring, and execution agency behind the MSRTC Media Network.",
   established: "2012",
   incorporation: "Incorporated under the Companies Act, 1956",
   employees: "225",
