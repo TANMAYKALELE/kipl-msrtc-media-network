@@ -259,10 +259,10 @@ const AboutKipl = () => {
           whileInView="visible"
           viewport={viewportReveal}
         >
-          {PASSENGER.map(({ icon: Icon, t, d }) => (
+          {PASSENGER.map(({ icon: Icon, t, d }, i) => (
             <motion.div
               key={t}
-              className="bg-surface-1 p-6"
+              className={`bg-surface-1 p-6 ${i === 6 ? "lg:col-span-3 sm:col-span-2" : ""}`}
               variants={safeVariants(reduce, fadeUp)}
               whileHover={reduce ? undefined : cardHover}
               whileTap={reduce ? undefined : cardHoverReset}
